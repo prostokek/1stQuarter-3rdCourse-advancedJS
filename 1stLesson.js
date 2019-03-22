@@ -1,12 +1,13 @@
-// Создание
+// 
 
 const cart0 = [
-    {name: 'T-Shirt', price: 100, color: 'white', pic: 'imgs/shoppingCartPage_productPic1.jpg'},
-    {name: 'T-Shirt', price: 200, color: 'green', pic: 'imgs/shoppingCartPage_productPic2.jpg'},
-    {name: 'T-Shirt', price: 300, color: 'red', pic: 'imgs/shoppingCartPage_productPic3.jpg'},
-    {name: 'T-Shirt', price: 400, color: 'cyan', pic: 'imgs/shoppingCartPage_productPic4.jpg'}
+    {name: 'T-Shirt', price: 100, color: 'white', pic: 'imgs/shoppingCartPage_productPic1.jpg', quantity: 0},
+    {name: 'T-Shirt', price: 200, color: 'green', pic: 'imgs/shoppingCartPage_productPic2.jpg', quantity: 0},
+    {name: 'T-Shirt', price: 300, color: 'red', pic: 'imgs/shoppingCartPage_productPic3.jpg', quantity: 0},
+    {name: 'T-Shirt', price: 400, color: 'cyan', pic: 'imgs/shoppingCartPage_productPic4.jpg', quantity: 0}
 ];
 
+// Рендер корзины
 const cart_renderItem = ({name, price, color, pic}) => `<section class="product">
 <div class="productPic">
     <img src="${pic}" alt="">
@@ -44,28 +45,28 @@ const cart_renderItem = ({name, price, color, pic}) => `<section class="product"
 </section>`;
 
 const cart_renderList = items => {
-    const itemsHtmls = items.map(cart_renderItem).join('');
-    console.log(itemsHtmls);
-    document.querySelector('.products').innerHTML = itemsHtmls;
+    const cart_itemsHtmls = items.map(cart_renderItem).join('');
+    // console.log(cart_itemsHtmls);
+    document.querySelector('.products').innerHTML = cart_itemsHtmls; // products in cart
 }
 
 cart_renderList(cart0);
 
-// 
+// /Рендер корзины
 
-//
+// Создание каталога
 
 const products = [
-        {name: 'T-Shirt', price: 100, color: 'white', pic: 'imgs/productPage_main_pic1.jpg'},
-        {name: 'T-Shirt', price: 200, color: 'green', pic: 'imgs/productPage_main_pic2.jpg'},
-        {name: 'T-Shirt', price: 300, color: 'red', pic: 'imgs/productPage_main_pic3.jpg'},
-        {name: 'T-Shirt', price: 400, color: 'cyan', pic: 'imgs/productPage_main_pic4.jpg'}
+        {name: 'T-Shirt', price: 100, color: 'white', pic: 'imgs/productPage_main_pic1.jpg', quantity: 0},
+        {name: 'T-Shirt', price: 200, color: 'green', pic: 'imgs/productPage_main_pic2.jpg', quantity: 0},
+        {name: 'T-Shirt', price: 300, color: 'red', pic: 'imgs/productPage_main_pic3.jpg', quantity: 0},
+        {name: 'T-Shirt', price: 400, color: 'cyan', pic: 'imgs/productPage_main_pic4.jpg', quantity: 0}
 ];
 
 const catalogue_renderItem = ({name, price, pic}) => `<div class="product item_hover_wrap"><img src="${pic}" alt="featuredItems_Pic1">
 <p>${name}<span>$${price}</span></p>
 <div class="item_hover_addToCart">
-    <a href="#" class="addToCart_tablet"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+    <button class="addToCart_tablet"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
     <a href="#" class="share"><i class="fas fa-retweet"></i></a><a href="#" class="like"><i class="far fa-heart"></i></a>
 </div>
 
@@ -78,12 +79,14 @@ const catalogue_renderList = items => {
 
 catalogue_renderList(products);
 
-//
+// /Создание каталога
 
 
-var cart = [pants, socks, t_shirt];
+// var cart = [pants, socks, t_shirt];
+var cart = cart0;
 
 var $cart = document.getElementById('cart');
+// var $cart = document.querySelector('.cart');
 
 var $cart_content = $cart.appendChild(document.createElement('details'));
 $cart_content.classList.add('cart_content');
@@ -155,45 +158,48 @@ cart_printTotal(cart);
 
 // СОЗДАНИЕ КАТАЛОГА ИЗ МАССИВА С ТОВАРАМИ
 
-var $catalogue = document.getElementById('catalogue');
+// var $catalogue = document.getElementById('catalogue');
 
-function buildCatalogue(products) { // Функция, выводящая информацию о продуктах в HTML
-    for (var i = 0; i < products.length; i++) {
-        var $productWrap = document.createElement('div');
-        $productWrap.classList.add('product_wrap');
-        $productWrap.id = products[i].id;
-        $catalogue.appendChild($productWrap);
 
-        var $productName = document.createElement('h4');
-        $productName.classList.add('product_name');
-        $productName.textContent = products[i].name;
-        $productWrap.appendChild($productName);
+// function buildCatalogue(products) { // Функция, выводящая информацию о продуктах в HTML
+//     for (var i = 0; i < products.length; i++) {
+//         var $productWrap = document.createElement('div');
+//         $productWrap.classList.add('product_wrap');
+//         $productWrap.id = products[i].id;
+//         $catalogue.appendChild($productWrap);
 
-        var $productPrice = document.createElement('p');
-        $productPrice.classList.add('product_price');
-        $productPrice.textContent = 'Цена - ' + products[i].price + 'рублей.';
-        $productWrap.appendChild($productPrice);
+//         var $productName = document.createElement('h4');
+//         $productName.classList.add('product_name');
+//         $productName.textContent = products[i].name;
+//         $productWrap.appendChild($productName);
 
-        var $productPic = document.createElement('img');
-        $productPic.classList.add('product_pic');
-        $productPic.src = products[i].picture;
-        $productWrap.appendChild($productPic);
+//         var $productPrice = document.createElement('p');
+//         $productPrice.classList.add('product_price');
+//         $productPrice.textContent = 'Цена - ' + products[i].price + 'рублей.';
+//         $productWrap.appendChild($productPrice);
 
-        var $productAddButton = document.createElement('button');
-        $productAddButton.classList.add('product_addToCartButton');
-        $productAddButton.textContent = 'Добавить в корзину'; 
-        $productWrap.appendChild($productAddButton);
+//         var $productPic = document.createElement('img');
+//         $productPic.classList.add('product_pic');
+//         $productPic.src = products[i].picture;
+//         $productWrap.appendChild($productPic);
 
-        var $productRemoveButton = document.createElement('button');
-        $productRemoveButton.classList.add('product_removeToCartButton');
-        $productRemoveButton.textContent = 'Удалить из корзины'; 
-        $productWrap.appendChild($productRemoveButton);
-    }
-}
+//         var $productAddButton = document.createElement('button');
+//         $productAddButton.classList.add('product_addToCartButton');
+//         $productAddButton.textContent = 'Добавить в корзину'; 
+//         $productWrap.appendChild($productAddButton);
 
-buildCatalogue(products);
+//         var $productRemoveButton = document.createElement('button');
+//         $productRemoveButton.classList.add('product_removeToCartButton');
+//         $productRemoveButton.textContent = 'Удалить из корзины'; 
+//         $productWrap.appendChild($productRemoveButton);
+//     }
+// }
+
+// buildCatalogue(products);
 
 // /СОЗДАНИЕ КАТАЛОГА ИЗ МАССИВА С ТОВАРАМИ
+
+var $catalogue = document.getElementById('productPage_main_products');
 
 $catalogue.addEventListener('click', handleAddToCart_button);
 
@@ -202,7 +208,7 @@ function handleAddToCart_button() { // Искомая функция ()
 
         var currentProduct_id = +event.target.parentNode.id; //id текущего продукта - id кнопки, на которую нажимаем
 
-        if (event.target.classList.contains('product_addToCartButton')) {
+        if (event.target.classList.contains('addToCart_tablet')) {
             for (var i = 0; i < cart.length; i++) {
                 if (products[currentProduct_id].name == cart[i].name) {
                     cart[i].quantity += 1; // увеличиваем количество выбранного товара на 1
@@ -270,5 +276,6 @@ function showNextSection() {
 
 
 
+$(document).on("click.bs.dropdown.data-api", ".noclose", function (e) { e.stopPropagation() }); // Корзина не закрывается при клике по ней
 
 

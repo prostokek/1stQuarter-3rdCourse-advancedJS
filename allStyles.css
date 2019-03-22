@@ -11368,6 +11368,7 @@ a:hover {
   font-weight: 700;
   border: 1px solid white;
   border-radius: 3px;
+  background: inherit;
 }
 
 /* line 73, E:/Coding/Learning with GeekBrains/git/homework_DimaGalyanov/styles/scss/allStyles.scss */
