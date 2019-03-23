@@ -12178,6 +12178,11 @@ header .headerInside .logo span {
   height: 30px;
 }
 
+.cart .products .details p .removeFromCartButton {
+  background: inherit;
+  border: none;
+  margin-top: 9px;
+}
 /* line 688, E:/Coding/Learning with GeekBrains/git/homework_DimaGalyanov/styles/scss/allStyles.scss */
 .cart .products .details p:nth-child(2) {
   border: 1px solid #eaeaea;
