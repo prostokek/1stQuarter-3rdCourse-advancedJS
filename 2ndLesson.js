@@ -1,25 +1,19 @@
 // СОЗДАНИЕ ПЕРЕМЕННЫХ
 
-const products = [
-    {id: 0, name: 'T-Shirt0', price: 100, color: 'white', pic: 'imgs/productPage_main_pic1.jpg', quantity: 0},
-    {id: 1, name: 'T-Shirt1', price: 200, color: 'green', pic: 'imgs/productPage_main_pic2.jpg', quantity: 0},
-    {id: 2, name: 'T-Shirt2', price: 300, color: 'red', pic: 'imgs/productPage_main_pic3.jpg', quantity: 0},
-    {id: 3, name: 'T-Shirt3', price: 400, color: 'cyan', pic: 'imgs/productPage_main_pic4.jpg', quantity: 0}
-];
-
-var cart = products;
-
-// DOM-переменные
+// ____DOM-переменные____
 
 var $cart_products = document.getElementById('cart_products');
 
 var $catalogue = document.getElementById('productPage_main_products');
 
-// /DOM-переменные
+// /____DOM-переменные____
 
 // /СОЗДАНИЕ ПЕРЕМЕННЫХ
 
 // СОЗДАНИЕ КЛАССОВ
+
+// ____Каталог____
+// Предмет в каталоге
 
 class CatalogueItem {
     constructor(id, name, price, color, pic, quantity) {
@@ -41,6 +35,10 @@ class CatalogueItem {
 </div>`
     }
 }
+
+// /Предмет в каталоге
+
+// Весь каталог
 
 class CatalogueList {
     constructor() {
@@ -64,13 +62,18 @@ class CatalogueList {
     }
 }
 
-//
 
+// Вызов [отрисовки] каталога
 const catalogue = new CatalogueList();
 catalogue.fetchProducts();
 catalogue.render();
+// /Вызов [отрисовки] каталога
 
-//
+// /Весь каталог
+// /____Каталог____
+
+// ____Корзина____
+// Предмет в корзине
 
 class CartItem extends CatalogueItem {
     render() {
@@ -112,6 +115,10 @@ class CartItem extends CatalogueItem {
     }
 };
 
+// /Предмет в корзине
+
+// Вся корзина
+
 class CartList extends CatalogueList {
     render() {
         let cartHtml = ``;
@@ -119,68 +126,34 @@ class CartList extends CatalogueList {
             const cartItem = new CartItem(good.id, good.name, good.price, good.color, good.pic, good.quantity);
             cartHtml += cartItem.render();
         })
+        cartHtml += this.summaryCost();
         $cart_products.innerHTML = cartHtml;
     }
-    updateQuantity() {
-        this.products = cart;
+    summaryCost() {
+        var summaryCartCost = 0; 
+        for (var i = 0; i < this.products.length; i++) {
+            const cartItemCost = this.products[i].price * this.products[i].quantity;
+            summaryCartCost += cartItemCost;
+        }
+        return `<h4>Общая стоимость товаров в корзине: $${summaryCartCost}</h4>`;
     }
 }
 
+// Вызов [отрисовки] корзины 
 const cartList = new CartList();
 cartList.fetchProducts();
 cartList.render();
+cartList.summaryCost();
+// /Вызов [отрисовки] корзины 
+
+// /Вся корзина
+// /____Корзина____
+
 // /СОЗДАНИЕ КЛАССОВ
 
 // СОЗДАНИЕ ФУНКЦИЙ
 
-// Рендер корзины
-
-// const cart_renderItem = ({id, name, price, color, pic, quantity}) => `<section class="product" id="${id}">
-// <div class="productPic">
-// <img src="${pic}" alt="">
-// <div>
-//     <h6>${name}</h6>
-//     <p><b>Color:</b> ${color}<br><b>Size:</b> XLL</p>
-// </div>
-// </div>
-// <div class="details">
-// <p>
-// <span>
-//     UNITY PRICE
-// </span>
-// $${price}</p>
-// <p>
-//    <span>
-//        QUANTITY
-//    </span>
-//    ${quantity}
-// </p>
-// <p>
-// <span>
-//     SHIPPING
-// </span>
-// FREE
-// </p>
-// <p>
-// <span>
-//     SUBTOTAL
-// </span>
-// $${quantity * price}
-// </p>
-// <p><button class="fas fa-times-circle removeFromCartButton"></button></p>
-// </div>
-// </section>`;
-
-// const cart_renderList = items => {
-// const cart_itemsHtmls = items.map(cart_renderItem).join('');
-// $cart_products.innerHTML = cart_itemsHtmls; // products in cart
-// }
-
-// cart_renderList(cart);
-
-// /Рендер корзины
-
-// Добавление в корзину из каталога
+// ____Добавление в корзину из каталога____
 
 $catalogue.addEventListener('click', handleAddToCart_button);
 
@@ -190,22 +163,20 @@ if (event.target.tagName === 'BUTTON') { // если нажали на кноп�
     var currentProduct_id = +event.target.parentNode.parentNode.id; //id текущего продукта - id кнопки, на которую нажимаем
 
     if (event.target.classList.contains('addToCart_tablet')) {
-        for (var i = 0; i < cart.length; i++) {
-            if (products[currentProduct_id].id == cart[i].id) {
-                cart[i].quantity += 1; // увеличиваем количество выбранного товара на 1
+        for (var i = 0; i < cartList.products.length; i++) {
+            if (cartList.products[currentProduct_id].id == cartList.products[i].id) {
+                cartList.products[i].quantity += 1; // увеличиваем количество выбранного товара на 1
             }
         }
     }
 
-    // cart_renderList(cart);
-    cartList.updateQuantity();
     cartList.render();
 }
 }
 
-// /Добавление в корзину (из каталога)
+// /____Добавление в корзину (из каталога)____
 
-// Удаление из корзины
+// ____Удаление из корзины____
 
 $cart_products.addEventListener('click', handleRemoveFromCart_button);
 
@@ -214,18 +185,19 @@ if (event.target.tagName === 'BUTTON') {
 
     var currentProduct_id = +event.target.parentNode.parentNode.parentNode.id;
 
-    if (event.target.classList.contains('removeFromCartButton') && (products[currentProduct_id].quantity > 0)) {
-        for (var i = 0; i < cart.length; i++) {
-            if (products[currentProduct_id].id == cart[i].id) {
-                cart[i].quantity -= 1; // уменьшаем количество выбранного товара на 1
+    if (event.target.classList.contains('removeFromCartButton') && (cartList.products[currentProduct_id].quantity > 0)) {
+        for (var i = 0; i < cartList.products.length; i++) {
+            if (cartList.products[currentProduct_id].id == cartList.products[i].id) {
+                cartList.products[i].quantity -= 1; // уменьшаем количество выбранного товара на 1
             }
         }
     }
-    cart_renderList(cart);
+
+    cartList.render();
 }
 }
 
-// Удаление из корзины
+// ____Удаление из корзины____
 
 $(document).on("click.bs.dropdown.data-api", ".noclose", function (e) { e.stopPropagation() }); // Корзина не закрывается при клике по ней
 
