@@ -2,9 +2,9 @@
 
 // ____DOM-переменные____
 
-var $cart_products = document.getElementById('cart_products');
+const $cart_products = document.getElementById('cart_products');
 
-var $catalogue = document.getElementById('productPage_main_products');
+const $catalogue = document.getElementById('productPage_main_products');
 
 // /____DOM-переменные____
 
@@ -130,11 +130,7 @@ class CartList extends CatalogueList {
         $cart_products.innerHTML = cartHtml;
     }
     summaryCost() {
-        var summaryCartCost = 0; 
-        for (var i = 0; i < this.products.length; i++) {
-            const cartItemCost = this.products[i].price * this.products[i].quantity;
-            summaryCartCost += cartItemCost;
-        }
+        let summaryCartCost = this.products.reduce((acc, item) => acc + (item.price * item.quantity), 0);
         return `<h4>Общая стоимость товаров в корзине: $${summaryCartCost}</h4>`;
     }
 }
@@ -160,10 +156,10 @@ $catalogue.addEventListener('click', handleAddToCart_button);
 function handleAddToCart_button() { // Искомая функция ()
 if (event.target.tagName === 'BUTTON') { // если нажали на кнопку
 
-    var currentProduct_id = +event.target.parentNode.parentNode.id; //id текущего продукта - id кнопки, на которую нажимаем
+    let currentProduct_id = +event.target.parentNode.parentNode.id; //id текущего продукта - id кнопки, на которую нажимаем
 
     if (event.target.classList.contains('addToCart_tablet')) {
-        for (var i = 0; i < cartList.products.length; i++) {
+        for (let i = 0; i < cartList.products.length; i++) {
             if (cartList.products[currentProduct_id].id == cartList.products[i].id) {
                 cartList.products[i].quantity += 1; // увеличиваем количество выбранного товара на 1
             }
@@ -183,10 +179,10 @@ $cart_products.addEventListener('click', handleRemoveFromCart_button);
 function handleRemoveFromCart_button() {
 if (event.target.tagName === 'BUTTON') {
 
-    var currentProduct_id = +event.target.parentNode.parentNode.parentNode.id;
+    let currentProduct_id = +event.target.parentNode.parentNode.parentNode.id;
 
     if (event.target.classList.contains('removeFromCartButton') && (cartList.products[currentProduct_id].quantity > 0)) {
-        for (var i = 0; i < cartList.products.length; i++) {
+        for (let i = 0; i < cartList.products.length; i++) {
             if (cartList.products[currentProduct_id].id == cartList.products[i].id) {
                 cartList.products[i].quantity -= 1; // уменьшаем количество выбранного товара на 1
             }
