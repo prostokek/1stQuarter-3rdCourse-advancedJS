@@ -12997,7 +12997,7 @@ header .headerInside .logo span {
 
 /* line 1298, E:/Coding/Learning with GeekBrains/git/homework_DimaGalyanov/styles/scss/allStyles.scss */
 .productPage_mainContent .price .priceRange_pic {
-  background: url(imgs/priceRange.svg) no-repeat;
+  background: url(../imgs/priceRange.svg) no-repeat;
   width: 262px;
   height: 15px;
 }
