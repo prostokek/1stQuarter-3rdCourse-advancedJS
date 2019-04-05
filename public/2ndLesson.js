@@ -75,11 +75,28 @@ class CatalogueList {
                     }
                 }
             }
-
             cartList.render();
+            // if (event.target.tagName === 'BUTTON' && event.target.classList.contains('addToCart_tablet')) {
+            //     let currentProduct_id = +event.target.parentNode.parentNode.id;
+            //     fetch(`/cart/${currentProduct_id}`).then((item) => {
+            //         let currentProductQuantity = item.quantity
+            //         console.log(currentProductQuantity);
+            //         cartList.render();
+            // });
+            // fetch(`/cart/${currentProduct_id}`, {
+            //     method: "PATCH",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify({ quantity })
+            // })
+
+            // })
         }
+
     }
 }
+// }
 
 
 // Вызов [отрисовки] каталога
@@ -165,23 +182,23 @@ class CartList extends CatalogueList {
         })
     }
 
-removeFromCartButton() {
+    removeFromCartButton() {
 
-    if (event.target.tagName === 'BUTTON') {
+        if (event.target.tagName === 'BUTTON') {
 
-        let currentProduct_id = +event.target.parentNode.parentNode.parentNode.id;
+            let currentProduct_id = +event.target.parentNode.parentNode.parentNode.id;
 
-        if (event.target.classList.contains('removeFromCartButton') && (cartList.products[currentProduct_id].quantity > 0)) {
-            for (let i = 0; i < cartList.products.length; i++) {
-                if (cartList.products[currentProduct_id].id == cartList.products[i].id) {
-                    cartList.products[i].quantity -= 1; // уменьшаем количество выбранного товара на 1
+            if (event.target.classList.contains('removeFromCartButton') && (cartList.products[currentProduct_id].quantity > 0)) {
+                for (let i = 0; i < cartList.products.length; i++) {
+                    if (cartList.products[currentProduct_id].id == cartList.products[i].id) {
+                        cartList.products[i].quantity -= 1; // уменьшаем количество выбранного товара на 1
+                    }
                 }
             }
-        }
 
-        cartList.render();
+            cartList.render();
+        }
     }
-}
 }
 
 // Вызов [отрисовки] корзины 
