@@ -45,19 +45,14 @@ class CatalogueList {
         this.products = [];
     }
     fetchProducts() {
-        const fetchProductsPromise = new Promise((resolve, reject) => {
-            sendRequest('/products.json', (items) => {
-                this.products = items;
-                if (items !== []) {
-                    resolve();
-                }
-            });
+        sendRequest(`/products`).then((items) => { // В скобках же мы обзываем результат resolve. Здесь мы решили звать его items. Далее просто его используем
+            this.products = items;
+            this.render();
         });
-        fetchProductsPromise.then(
-            () => {
-                this.render();
-            }, // onFulfilled
-        )
+        // fetch(`/products.json`).then((response) => response.json()).then((items) => {
+        //     this.products = items;
+        //     this.render();
+        // });
     };
     render() {
         let catalogueHtml = ``;
@@ -91,7 +86,6 @@ class CatalogueList {
 const catalogue = new CatalogueList();
 $catalogue.addEventListener('click', catalogue.addToCartButton);
 catalogue.fetchProducts();
-// catalogue.render();
 // /Вызов [отрисовки] каталога
 
 // /Весь каталог
@@ -159,38 +153,42 @@ class CartList extends CatalogueList {
         return `<h4>Общая стоимость товаров в корзине: $${summaryCartCost}</h4>`;
     }
     fetchProducts() {
-        this.products = [
-            { id: 0, name: 'T-Shirt0', price: 100, color: 'white', pic: 'imgs/productPage_main_pic1.jpg', quantity: 0 },
-            { id: 1, name: 'T-Shirt1', price: 200, color: 'green', pic: 'imgs/productPage_main_pic2.jpg', quantity: 0 },
-            { id: 2, name: 'T-Shirt2', price: 300, color: 'red', pic: 'imgs/productPage_main_pic3.jpg', quantity: 0 },
-            { id: 3, name: 'T-Shirt3', price: 400, color: 'cyan', pic: 'imgs/productPage_main_pic4.jpg', quantity: 0 }
-        ];
+        // this.products = [
+        //     { id: 0, name: 'T-Shirt0', price: 100, color: 'white', pic: 'imgs/productPage_main_pic1.jpg', quantity: 0 },
+        //     { id: 1, name: 'T-Shirt1', price: 200, color: 'green', pic: 'imgs/productPage_main_pic2.jpg', quantity: 0 },
+        //     { id: 2, name: 'T-Shirt2', price: 300, color: 'red', pic: 'imgs/productPage_main_pic3.jpg', quantity: 0 },
+        //     { id: 3, name: 'T-Shirt3', price: 400, color: 'cyan', pic: 'imgs/productPage_main_pic4.jpg', quantity: 0 }
+        // ];
+        sendRequest(`/cart`).then((items) => {
+            this.products = items;
+            this.render();
+        })
     }
 
-    removeFromCartButton() {
+removeFromCartButton() {
 
-        if (event.target.tagName === 'BUTTON') {
+    if (event.target.tagName === 'BUTTON') {
 
-            let currentProduct_id = +event.target.parentNode.parentNode.parentNode.id;
+        let currentProduct_id = +event.target.parentNode.parentNode.parentNode.id;
 
-            if (event.target.classList.contains('removeFromCartButton') && (cartList.products[currentProduct_id].quantity > 0)) {
-                for (let i = 0; i < cartList.products.length; i++) {
-                    if (cartList.products[currentProduct_id].id == cartList.products[i].id) {
-                        cartList.products[i].quantity -= 1; // уменьшаем количество выбранного товара на 1
-                    }
+        if (event.target.classList.contains('removeFromCartButton') && (cartList.products[currentProduct_id].quantity > 0)) {
+            for (let i = 0; i < cartList.products.length; i++) {
+                if (cartList.products[currentProduct_id].id == cartList.products[i].id) {
+                    cartList.products[i].quantity -= 1; // уменьшаем количество выбранного товара на 1
                 }
             }
-
-            cartList.render();
         }
+
+        cartList.render();
     }
+}
 }
 
 // Вызов [отрисовки] корзины 
 const cartList = new CartList();
 $cart_products.addEventListener('click', cartList.removeFromCartButton);
 cartList.fetchProducts();
-cartList.render(); //
+// cartList.render(); //
 // /Вызов [отрисовки] корзины 
 
 // /Вся корзина
@@ -202,24 +200,8 @@ cartList.render(); //
 
 // ____Отправка запроса (GET) на сервер____
 
-function sendRequest(url, callback) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', url); // настройка запроса
-    xhr.send();
-
-    let requestPromise = new Promise((resolve, reject) => {
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                resolve(JSON.parse(xhr.responseText));
-                // callback(JSON.parse(xhr.responseText));
-            }
-        }
-    });
-    requestPromise.then(
-        (responseText) => {
-            callback(responseText);
-        }
-    )
+function sendRequest(url) {
+    return fetch(url).then((response) => response.json());
 };
 
 // /____Отправка запроса (GET) на сервер____
