@@ -6,6 +6,11 @@ const $cart_products = document.getElementById('cart_products');
 
 const $catalogue = document.getElementById('productPage_main_products');
 
+
+const $searchText = document.getElementById('search-text');
+
+const $searchButton = document.getElementById('search-button'); 
+
 // /____DOM-переменные____
 
 // /СОЗДАНИЕ ПЕРЕМЕННЫХ
@@ -28,7 +33,7 @@ class CatalogueItem {
         return `<div class="product item_hover_wrap" id="${this.id}"><img src="${this.pic}" alt="featuredItems_Pic1">
 <p>${this.name}<span>$${this.price}</span></p>
 <div class="item_hover_addToCart">
-<button class="addToCart_tablet"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+<button class="addToCart_tablet" id="${this.id}"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
 <a href="#" class="share"><i class="fas fa-retweet"></i></a><a href="#" class="like"><i class="far fa-heart"></i></a>
 </div>
 
@@ -47,6 +52,7 @@ class CatalogueList {
     fetchProducts() {
         sendRequest(`/products`).then((items) => { // В скобках же мы обзываем результат resolve. Здесь мы решили звать его items. Далее просто его используем
             this.products = items;
+            this.filteredProducts = this.products;
             this.render();
         });
         // fetch(`/products.json`).then((response) => response.json()).then((items) => {
@@ -63,10 +69,19 @@ class CatalogueList {
         $catalogue.innerHTML = catalogueHtml; // вставляем catalogueHtml в каталог
     };
 
+    renderFiltered() {
+        let catalogueHtml = ``;
+        this.filteredProducts.forEach(good => { //для каждого объекта массива products работает функция, принимающая один параметр       (сам объект)
+            const product = new CatalogueItem(good.id, good.name, good.price, good.color, good.pic, good.quantity); // создаём продукты на основе массива products
+            catalogueHtml += product.render(); // записываем html каждого продукта в catalogueHtml
+        })
+        $catalogue.innerHTML = catalogueHtml; // вставляем catalogueHtml в каталог
+    };
+
     addToCartButton() {
         if (event.target.tagName === 'BUTTON') { // если нажали на кнопку
 
-            let currentProduct_id = +event.target.parentNode.parentNode.id; //id текущего продукта - id кнопки, на которую нажимаем
+            let currentProduct_id = +event.target.id; //id текущего продукта - id кнопки, на которую нажимаем
 
             if (event.target.classList.contains('addToCart_tablet')) {
                 for (let i = 0; i < cartList.products.length; i++) {
@@ -93,7 +108,10 @@ class CatalogueList {
 
             // })
         }
-
+    }
+    filterItems(query) {
+        const regexp = new RegExp(query, 'i');
+        this.filteredProducts = this.products.filter((item) => regexp.test(item.name));
     }
 }
 // }
@@ -103,6 +121,13 @@ class CatalogueList {
 const catalogue = new CatalogueList();
 $catalogue.addEventListener('click', catalogue.addToCartButton);
 catalogue.fetchProducts();
+
+// Поиск по каталогу
+$searchButton.addEventListener('click', () => {
+    catalogue.filterItems($searchText.value);
+    catalogue.renderFiltered();
+})
+// /Поиск по каталогу
 // /Вызов [отрисовки] каталога
 
 // /Весь каталог
@@ -145,7 +170,7 @@ class CartItem extends CatalogueItem {
         </span>
         $${this.quantity * this.price}
         </p>
-        <p><button class="fas fa-times-circle removeFromCartButton"></button></p>
+        <p><button class="fas fa-times-circle removeFromCartButton" id="${this.id}"></button></p>
         </div>
         </section>`;
     }
@@ -186,7 +211,7 @@ class CartList extends CatalogueList {
 
         if (event.target.tagName === 'BUTTON') {
 
-            let currentProduct_id = +event.target.parentNode.parentNode.parentNode.id;
+            let currentProduct_id = +event.target.id;
 
             if (event.target.classList.contains('removeFromCartButton') && (cartList.products[currentProduct_id].quantity > 0)) {
                 for (let i = 0; i < cartList.products.length; i++) {
