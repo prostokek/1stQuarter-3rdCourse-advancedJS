@@ -6,6 +6,11 @@ const $cart_products = document.getElementById('cart_products');
 
 const $catalogue = document.getElementById('productPage_main_products');
 
+
+const $searchText = document.getElementById('search-text');
+
+const $searchButton = document.getElementById('search-button'); 
+
 // /____DOM-переменные____
 
 // /СОЗДАНИЕ ПЕРЕМЕННЫХ
@@ -28,7 +33,7 @@ class CatalogueItem {
         return `<div class="product item_hover_wrap" id="${this.id}"><img src="${this.pic}" alt="featuredItems_Pic1">
 <p>${this.name}<span>$${this.price}</span></p>
 <div class="item_hover_addToCart">
-<button class="addToCart_tablet"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+<button class="addToCart_tablet" id="${this.id}"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
 <a href="#" class="share"><i class="fas fa-retweet"></i></a><a href="#" class="like"><i class="far fa-heart"></i></a>
 </div>
 
@@ -45,19 +50,15 @@ class CatalogueList {
         this.products = [];
     }
     fetchProducts() {
-        const fetchProductsPromise = new Promise((resolve, reject) => {
-            sendRequest('/products.json', (items) => {
-                this.products = items;
-                if (items !== []) {
-                    resolve();
-                }
-            });
+        sendRequest(`/products`).then((items) => { // В скобках же мы обзываем результат resolve. Здесь мы решили звать его items. Далее просто его используем
+            this.products = items;
+            this.filteredProducts = this.products;
+            this.render();
         });
-        fetchProductsPromise.then(
-            () => {
-                this.render();
-            }, // onFulfilled
-        )
+        // fetch(`/products.json`).then((response) => response.json()).then((items) => {
+        //     this.products = items;
+        //     this.render();
+        // });
     };
     render() {
         let catalogueHtml = ``;
@@ -68,10 +69,19 @@ class CatalogueList {
         $catalogue.innerHTML = catalogueHtml; // вставляем catalogueHtml в каталог
     };
 
+    renderFiltered() {
+        let catalogueHtml = ``;
+        this.filteredProducts.forEach(good => { //для каждого объекта массива products работает функция, принимающая один параметр       (сам объект)
+            const product = new CatalogueItem(good.id, good.name, good.price, good.color, good.pic, good.quantity); // создаём продукты на основе массива products
+            catalogueHtml += product.render(); // записываем html каждого продукта в catalogueHtml
+        })
+        $catalogue.innerHTML = catalogueHtml; // вставляем catalogueHtml в каталог
+    };
+
     addToCartButton() {
         if (event.target.tagName === 'BUTTON') { // если нажали на кнопку
 
-            let currentProduct_id = +event.target.parentNode.parentNode.id; //id текущего продукта - id кнопки, на которую нажимаем
+            let currentProduct_id = +event.target.id; //id текущего продукта - id кнопки, на которую нажимаем
 
             if (event.target.classList.contains('addToCart_tablet')) {
                 for (let i = 0; i < cartList.products.length; i++) {
@@ -80,18 +90,44 @@ class CatalogueList {
                     }
                 }
             }
-
             cartList.render();
+            // if (event.target.tagName === 'BUTTON' && event.target.classList.contains('addToCart_tablet')) {
+            //     let currentProduct_id = +event.target.parentNode.parentNode.id;
+            //     fetch(`/cart/${currentProduct_id}`).then((item) => {
+            //         let currentProductQuantity = item.quantity
+            //         console.log(currentProductQuantity);
+            //         cartList.render();
+            // });
+            // fetch(`/cart/${currentProduct_id}`, {
+            //     method: "PATCH",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify({ quantity })
+            // })
+
+            // })
         }
     }
+    filterItems(query) {
+        const regexp = new RegExp(query, 'i');
+        this.filteredProducts = this.products.filter((item) => regexp.test(item.name));
+    }
 }
+// }
 
 
 // Вызов [отрисовки] каталога
 const catalogue = new CatalogueList();
 $catalogue.addEventListener('click', catalogue.addToCartButton);
 catalogue.fetchProducts();
-// catalogue.render();
+
+// Поиск по каталогу
+$searchButton.addEventListener('click', () => {
+    catalogue.filterItems($searchText.value);
+    catalogue.renderFiltered();
+})
+// /Поиск по каталогу
 // /Вызов [отрисовки] каталога
 
 // /Весь каталог
@@ -134,7 +170,7 @@ class CartItem extends CatalogueItem {
         </span>
         $${this.quantity * this.price}
         </p>
-        <p><button class="fas fa-times-circle removeFromCartButton"></button></p>
+        <p><button class="fas fa-times-circle removeFromCartButton" id="${this.id}"></button></p>
         </div>
         </section>`;
     }
@@ -159,19 +195,23 @@ class CartList extends CatalogueList {
         return `<h4>Общая стоимость товаров в корзине: $${summaryCartCost}</h4>`;
     }
     fetchProducts() {
-        this.products = [
-            { id: 0, name: 'T-Shirt0', price: 100, color: 'white', pic: 'imgs/productPage_main_pic1.jpg', quantity: 0 },
-            { id: 1, name: 'T-Shirt1', price: 200, color: 'green', pic: 'imgs/productPage_main_pic2.jpg', quantity: 0 },
-            { id: 2, name: 'T-Shirt2', price: 300, color: 'red', pic: 'imgs/productPage_main_pic3.jpg', quantity: 0 },
-            { id: 3, name: 'T-Shirt3', price: 400, color: 'cyan', pic: 'imgs/productPage_main_pic4.jpg', quantity: 0 }
-        ];
+        // this.products = [
+        //     { id: 0, name: 'T-Shirt0', price: 100, color: 'white', pic: 'imgs/productPage_main_pic1.jpg', quantity: 0 },
+        //     { id: 1, name: 'T-Shirt1', price: 200, color: 'green', pic: 'imgs/productPage_main_pic2.jpg', quantity: 0 },
+        //     { id: 2, name: 'T-Shirt2', price: 300, color: 'red', pic: 'imgs/productPage_main_pic3.jpg', quantity: 0 },
+        //     { id: 3, name: 'T-Shirt3', price: 400, color: 'cyan', pic: 'imgs/productPage_main_pic4.jpg', quantity: 0 }
+        // ];
+        sendRequest(`/cart`).then((items) => {
+            this.products = items;
+            this.render();
+        })
     }
 
     removeFromCartButton() {
 
         if (event.target.tagName === 'BUTTON') {
 
-            let currentProduct_id = +event.target.parentNode.parentNode.parentNode.id;
+            let currentProduct_id = +event.target.id;
 
             if (event.target.classList.contains('removeFromCartButton') && (cartList.products[currentProduct_id].quantity > 0)) {
                 for (let i = 0; i < cartList.products.length; i++) {
@@ -190,7 +230,7 @@ class CartList extends CatalogueList {
 const cartList = new CartList();
 $cart_products.addEventListener('click', cartList.removeFromCartButton);
 cartList.fetchProducts();
-cartList.render(); //
+// cartList.render(); //
 // /Вызов [отрисовки] корзины 
 
 // /Вся корзина
@@ -202,24 +242,8 @@ cartList.render(); //
 
 // ____Отправка запроса (GET) на сервер____
 
-function sendRequest(url, callback) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', url); // настройка запроса
-    xhr.send();
-
-    let requestPromise = new Promise((resolve, reject) => {
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                resolve(JSON.parse(xhr.responseText));
-                // callback(JSON.parse(xhr.responseText));
-            }
-        }
-    });
-    requestPromise.then(
-        (responseText) => {
-            callback(responseText);
-        }
-    )
+function sendRequest(url) {
+    return fetch(url).then((response) => response.json());
 };
 
 // /____Отправка запроса (GET) на сервер____
