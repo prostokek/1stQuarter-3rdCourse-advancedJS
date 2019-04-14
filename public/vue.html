@@ -71,7 +71,7 @@
                                                 ${{item.quantity * item.price}}
                                             </p>
                                             <p><button class="fas fa-times-circle removeFromCartButton"
-                                                    v-bind:id="item.id" @click="removeFromCartButtonClick"></button></p>
+                                                    v-bind:id="item.id" @click="removeFromCartButtonClick(item)"></button></p>
                                         </div>
                                     </section>
                                     <h3 v-if="summaryCartCost !== 0"> Общая стоимость товаров в корзине: ${{summaryCartCost}}</h3>
@@ -274,7 +274,7 @@
                                 <p>{{item.name}}<span>{{item.price}}</span></p>
                                 <div class="item_hover_addToCart">
                                     <button class="addToCart_tablet" v-bind:id="item.id"
-                                        @click='addToCartButtonClick'><i class="fas fa-shopping-cart"></i> Add to
+                                        @click='addToCartButtonClick(item)'><i class="fas fa-shopping-cart"></i> Add to <!-- (item)-->
                                         Cart</button>
                                     <a href="#" class="share"><i class="fas fa-retweet"></i></a><a href="#"
                                         class="like"><i class="far fa-heart"></i></a>

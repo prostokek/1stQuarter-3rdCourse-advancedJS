@@ -11,22 +11,53 @@ const app = new Vue({
             return fetch(url).then((response) => response.json());
         },
 
-        addToCartButtonClick() {
-                let currentProduct_id = +event.target.id; //id текущего продукта - id кнопки, на которую нажимаем
-    
-                    for (let i = 0; i < app.products.length; i++) {
-                        if (currentProduct_id === app.products[i].id) {
-                            app.cart[i].quantity++; // увеличиваем количество выбранного товара на 1
-                        }
-                    } // Почему quantity изменяется и у products????
-        },
-        removeFromCartButtonClick() {
-            let currentProduct_id = +event.target.id;
-
-            for (let i = 0; i < app.cart.length; i++) {
-                if(currentProduct_id === app.cart[i].id) {
-                    app.cart[i].quantity--;
+        addToCartButtonClick(item) { // параметр item
+                const cartItem = this.cart.find((cartProduct) => cartProduct.id === item.id); // вернуть cartProduct (что-то из массива cart), если id совпадает с id выбранного продукта|| find возвращает cartProduct, если один из id объектов в массиве this.cart совпадает с id выбранного item (объекта из каталога)
+                if(cartItem) {
+                    fetch(`/cart/${item.id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ quantity: cartItem.quantity + 1}),
+                    })
+                        .then((response) => response.json())
+                        .then((item) => {
+                            // console.log(item.id);
+                          const itemIndex = this.cart.findIndex((cartProduct) => cartProduct.id === item.id);
+                          this.cart[itemIndex].quantity = item.quantity;
+                      });
                 }
+                //  else {
+                //     fetch(`/cart`, {
+                //         method: 'POST',
+                //         headers: {
+                //             'Content-Type': 'application/json',
+                //         },
+                //         body: JSON.stringify({ ...item, quantity: 1 })
+                //     })
+                //         .then((response) => response.json())
+                //         .then((item) => {
+                //             this.cart.push(item);
+                //         });
+                // }
+        },
+        removeFromCartButtonClick(item) { // параметр item
+            const cartItem = this.cart.find((cartProduct) => cartProduct.id === item.id); // при помощи id находим в корзине нужный товар|| 
+            if(cartItem && cartItem.quantity !== 0) {
+                fetch(`/cart/${item.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ quantity: cartItem.quantity - 1}), // уменьшаем количество в корзине (на сервере)
+                })
+                    .then((response) => response.json()) //парсим ответ из json-строки в js-объект
+                    .then((item) => { //с полученным объектом работаем
+                        const itemIndex = this.cart.findIndex((cartProduct) => cartProduct.id === item.id); //находим в корзине (текущей (лежащей) на сайте (на самой странице), уже взятой с сервера)
+                        // this.cart[itemIndex].quantity = item.quantity; // изменяем количество на то, что на сервере (на количество в полученном объекте) || чтобы страница (нужная часть) сразу была перерисована 
+                        Vue.set(this.cart, itemIndex, item); // или можно "сказать" "(вот сюда, по этому ключу, положи вот это значение")
+                    });
             }
         },
 
@@ -41,12 +72,14 @@ const app = new Vue({
         this.sendRequest(`/products`).then((items) => { // В скобках же мы обзываем результат resolve. Здесь мы решили звать его items. Далее просто его используем
             this.products = items;
             this.filteredProducts = items;
+        });
+        this.sendRequest(`/cart`).then((items) => {
             this.cart = items;
-        })
+        });
     },
     computed: {
         summaryCartCost() {
-            return this.products.reduce((acc, item) => acc + (item.price * item.quantity), 0)}
+            return this.cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)}
     }
 })
 
