@@ -28,7 +28,10 @@
                             <img class="cartLogo" src="imgs/cart.png" alt="">
                         </button>
                         <div class="dropdown-menu dropdown-menu-lg-right noclose">
-                            <div id='cart' class="cart containerM">
+                            <cart :cart='cart' @onremovefromcartbuttonclick="removeFromCartButtonClick">
+
+                            </cart>
+                            <!-- <div id='cart' class="cart containerM">
                                 <h4 v-if="summaryCartCost !== 0">PRODUCT DETAILS</h4>
 
                                 <div class="clearfix"></div>
@@ -73,7 +76,7 @@
                                     <h3 v-if="summaryCartCost !== 0"> Общая стоимость товаров в корзине: ${{summaryCartCost}}</h3>
                                     <h3 v-else>Корзина пуста</h3>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                         <button class="myAccount">My Account <i class="fas fa-caret-down"></i></button>
                     </div>
