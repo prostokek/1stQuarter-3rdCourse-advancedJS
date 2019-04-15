@@ -268,23 +268,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 p-0 productPage_main_products row" id='productPage_main_products'>
+                        <catalogue :query="filterValue" @onaddtocartbuttonclick="addToCartButtonClick">
 
-                            <div v-for='item in filteredProducts' class="product item_hover_wrap"><img :src="item.pic">
-                                <p>{{item.name}}<span>{{item.price}}</span></p>
-                                <div class="item_hover_addToCart">
-                                    <button class="addToCart_tablet" v-bind:id="item.id"
-                                        @click='addToCartButtonClick(item)'><i class="fas fa-shopping-cart"></i> Add to <!-- (item)-->
-                                        Cart</button>
-                                    <a href="#" class="share"><i class="fas fa-retweet"></i></a><a href="#"
-                                        class="like"><i class="far fa-heart"></i></a>
-                                </div>
-                            </div>
-
-                            <div v-if="app.filteredProducts.length == 0">
+                        </catalogue>
+                            <!-- <div v-if="filteredProducts.length == 0">
                                 <h2>Ничего не найдено</h2>
-                            </div>
-                        </div>
+                            </div> -->
+                        <!-- </div> -->
                         <div class="pagination">
                             <nav class="pages">
                                 <a href="#"><i class="fas fa-chevron-left"></i></a>
