@@ -205,7 +205,7 @@ const app = new Vue({
 
 // $(document).on("click.bs.dropdown.data-api", ".noclose", function (e) { e.stopPropagation() }); // Корзина не закрывается при клике по ней
 
-
+/////////
 
                 //  else {
                 //     fetch(`/cart`, {
