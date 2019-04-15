@@ -44,7 +44,7 @@
       "price": 200,
       "color": "green",
       "pic": "imgs/productPage_main_pic2.jpg",
-      "quantity": 2
+      "quantity": 0
     },
     {
       "id": 2,
@@ -52,7 +52,7 @@
       "price": 300,
       "color": "red",
       "pic": "imgs/productPage_main_pic3.jpg",
-      "quantity": 2
+      "quantity": 0
     },
     {
       "id": 3,
@@ -60,7 +60,7 @@
       "price": 400,
       "color": "cyan",
       "pic": "imgs/productPage_main_pic4.jpg",
-      "quantity": 4
+      "quantity": 0
     }
   ]
 }

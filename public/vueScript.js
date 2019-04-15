@@ -48,11 +48,11 @@ Vue.component('catalogue', {
     },
     template: `
     <div class="col-12 p-0 productPage_main_products row" id='productPage_main_products'>
-        <product v-for='product in filteredProducts' :item="product" @onAddToCartButtonClick="AddToCartButtonClick" class="product item_hover_wrap">     
+        <product v-for='product in filteredProducts' :item="product" @onAddToCartButtonClick="addToCartButtonClick" class="product item_hover_wrap">     
         </product>
-        <!--  <div v-if="filteredProducts.length == 0">
+        <div v-if="filteredProducts.length == 0">
             <h2>Ничего не найдено</h2>
-        </div> -->
+        </div> 
     </div>
     `,
     
