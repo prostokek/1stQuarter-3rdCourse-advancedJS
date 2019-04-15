@@ -19,11 +19,7 @@
         <header class="wrap">
             <div class="headerInside container">
                 <div class="logo">BRAN<span>D</span></div>
-                <form class="searchWrap">
-                    <div class="searchBrowse"><a href="#">Browse <i class="fas fa-caret-down"></i></a></div>
-                    <input placeholder="Search for Item..." v-model="searchQuery" type="text" id='search-text'>
-                    <button @click="search"><i class="fas fa-search" id='search-button'></i></button>
-                </form>
+                <search @search="search"></search>
                 <div class="buttons">
 
                     <div class="btn-group dropleft">

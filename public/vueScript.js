@@ -139,11 +139,30 @@ Vue.component('cart', {
     `
 });
 
+Vue.component('search', {
+    data() {
+        return {
+            searchQuery: '',
+        }
+    },
+    methods: {
+        search() {
+            this.$emit('search', this.searchQuery)
+        }
+    },
+    template: `
+    <form class="searchWrap">
+        <div class="searchBrowse"><a href="#">Browse <i class="fas fa-caret-down"></i></a></div>
+        <input placeholder="Search for Item..." v-model="searchQuery" type="text" id='search-text'>
+        <button @click="search"><i class="fas fa-search" id='search-button'></i></button>
+    </form>
+    `,
+});
+
 const app = new Vue({
     el: '#app',
     data: {
         cart: [],
-        searchQuery: '',
         filterValue: '',
     },
     mounted() {
@@ -193,8 +212,8 @@ const app = new Vue({
                     });
             }
         },
-        search() {
-            this.filterValue = this.searchQuery;
+        search(query) {
+            this.filterValue = query;
             // let regexp = new RegExp(this.searchQuery, 'i');
             // this.filteredProducts = this.products.filter((item) => regexp.test(item.name));
         },
