@@ -172,8 +172,7 @@ const app = new Vue({
                     .then((response) => response.json())
                     .then((item) => {
                         const itemIndex = this.cart.findIndex((cartProduct) => cartProduct.id === item.id);
-                        // this.cart[itemIndex].quantity = item.quantity;
-                        Vue.set(this.cart, itemIndex, item);
+                        Vue.set(this.cart, itemIndex, item); // this.cart[itemIndex].quantity = item.quantity;
                     });
             }
         },
@@ -190,8 +189,7 @@ const app = new Vue({
                     .then((response) => response.json()) //парсим ответ из json-строки в js-объект
                     .then((item) => { //с полученным объектом работаем
                         const itemIndex = this.cart.findIndex((cartProduct) => cartProduct.id === item.id); //находим в корзине (текущей (лежащей) на сайте (на самой странице), уже взятой с сервера)
-                        // this.cart[itemIndex].quantity = item.quantity; // изменяем количество на то, что на сервере (на количество в полученном объекте) || чтобы страница (нужная часть) сразу была перерисована 
-                        Vue.set(this.cart, itemIndex, item); // или можно "сказать" "(вот сюда, по этому ключу, положи вот это значение")
+                        Vue.set(this.cart, itemIndex, item); // или можно "сказать" "(вот сюда, по этому ключу, положи вот это значение") || // this.cart[itemIndex].quantity = item.quantity; // изменяем количество на то, что на сервере (на количество в полученном объекте) || чтобы страница (нужная часть) сразу была перерисована 
                     });
             }
         },
