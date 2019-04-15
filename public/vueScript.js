@@ -58,6 +58,87 @@ Vue.component('catalogue', {
     
 });
 
+Vue.component('cart-item', {
+    props: ['item'],
+    methods: {
+        removeFromCartButtonClick(item) {
+            this.$emit('onRemoveFromCartButtonClick', item);
+        }
+    },
+    template: `
+    <section v-if="item.quantity" class="product">
+        <div class="productPic">
+            <img :src="item.pic">
+            <div>
+                <h6>{{item.name}}</h6>
+                <p><b>Color:</b> {{item.color}}<br><b>Size:</b> XLL</p>
+            </div>
+        </div>
+        <div class="details">
+            <p> 
+                <span>
+                    UNITY PRICE
+                </span>
+                {{item.price}}
+            </p>
+            <p>
+                <span>
+                    QUANTITY
+                </span>
+                {{item.quantity}}
+            </p>
+            <p>
+                <span>
+                    SHIPPING
+                </span>
+                FREE
+            </p>
+            <p>
+                <span>
+                    SUBTOTAL
+                </span>
+                \${{item.quantity * item.price}}
+            </p>
+            <p><button class="fas fa-times-circle removeFromCartButton" v-bind:id="item.id" @click.prevent="removeFromCartButtonClick(item)"></button></p>
+        </div>
+    </section>
+    `,
+});
+
+Vue.component('cart', {
+    methods:  {
+        removeFromCartButtonClick(item) {
+            this.$emit('onremovefromcartbuttonclick', item);
+        }
+    },
+    data() {
+        return {
+            cart: [],
+        } 
+    },
+    mounted() {
+        fetch(`/cart`)
+            .then((response) => response.json)
+            .then((items) => {
+                this.cart = items;
+            });
+    },
+    template: `                            
+    <div id='cart' class="cart containerM">
+        <h4 v-if="summaryCartCost !== 0">PRODUCT DETAILS</h4>
+
+        <div class="clearfix"></div>
+        <div class="products" id='cart_products'>
+
+            <cart-item v-for="item in cart"></cart-item>
+
+            <h3 v-if="summaryCartCost !== 0"> Общая стоимость товаров в корзине: \${{summaryCartCost}}</h3>
+            <h3 v-else>Корзина пуста</h3>
+        </div>
+    </div>
+    `
+});
+
 const app = new Vue({
     el: '#app',
     data: {
