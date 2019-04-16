@@ -1,0 +1,22 @@
+{
+  "name": "1stquarter-3rdcourse-advancedjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prostokek/1stQuarter-3rdCourse-advancedJS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prostokek/1stQuarter-3rdCourse-advancedJS/issues"
+  },
+  "homepage": "https://github.com/prostokek/1stQuarter-3rdCourse-advancedJS#readme",
+  "dependencies": {
+    "vue": "^2.6.10"
+  }
+}
