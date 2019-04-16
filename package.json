@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/prostokek/1stQuarter-3rdCourse-advancedJS#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
     "vue": "^2.6.10"
   }
 }
