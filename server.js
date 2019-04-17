@@ -1,12 +1,46 @@
 const express = require('express'); // подключаем express
 const fs = require('fs'); // подключаем работу с файловой системой
 const bodyParser = require('body-parser'); // подключаем для post запросов
+const moment = require('moment'); // для работы с датами
 
 const app = express(); // он его из vueScript.js берёт (?)
 
 app.use(express.static('./public')); // указываем корневую папку
 app.use(bodyParser.json()); // подключаем к app bodyParser, указываем тип данных
 
+app.use(`/cart`, (req, res, next) => { //перехватает любой запрос к /cart до его исполнения
+    if(['POST', 'PATCH', 'DELETE'].includes(req.method)) { //у меня только Patch, по идее, зайдёт || чтобы не делать это при загрузке страницы
+        
+        fs.readFile('./db/stats.json', 'utf-8', (err, stats_data) => {
+            if(err) {
+                return console.log (err + 'error on stats read');
+            }
+            let stats = JSON.parse(stats_data);
+            if(req.method === 'PATCH') {
+                const [, , id] = req.url.split('/'); // первые два элемента массива пропустит, в id запишет число (искомое)
+                
+                fs.readFile('./db/products.json', 'utf-8', (err, products_data) => {
+                    const products = JSON.parse(products_data);
+                    const changingProduct = products.find((item) => item.id == id);
+                    
+                    stats = JSON.parse(stats_data);
+                    stats.push({
+                        action: 'Изменение количества',
+                        name: changingProduct.name,
+                        timestamp: moment().format()
+                    });
+                    stats = JSON.stringify(stats);
+                    fs.writeFile('./db/stats.json', stats, (err, data) => {
+                        if(err) {
+                            console.log (err + 'error on stats write');
+                        }
+                    })
+                });
+            }
+        })
+    };
+    next(); // это мы пропускаем запрос далее (к исполнению)
+});
 
 app.get('/products', (req, res) => { //request || response //при запросе products происходит следующее
     fs.readFile('./db/products.json', 'utf-8', (err, data) => { //"прочитай файл, ответь в кодировке, сделай это"
