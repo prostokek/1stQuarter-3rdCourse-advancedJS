@@ -1,0 +1,30 @@
+[
+    {
+        "id": 0,
+        "name": "T-Shirt0",
+        "price": 100,
+        "color": "white",
+        "pic": "imgs/productPage_main_pic1.jpg"
+    },
+    {
+        "id": 1,
+        "name": "T-Shirt1",
+        "price": 200,
+        "color": "green",
+        "pic": "imgs/productPage_main_pic2.jpg"
+    },
+    {
+        "id": 2,
+        "name": "T-Shirt2",
+        "price": 300,
+        "color": "red",
+        "pic": "imgs/productPage_main_pic3.jpg"
+    },
+    {
+        "id": 3,
+        "name": "T-Shirt3",
+        "price": 400,
+        "color": "cyan",
+        "pic": "imgs/productPage_main_pic4.jpg"
+    }
+]

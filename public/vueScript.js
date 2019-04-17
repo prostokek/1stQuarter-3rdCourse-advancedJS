@@ -1,3 +1,5 @@
+const $API_URL = `http://localhost:3000`;
+
 Vue.component('product', {
     props: ['item'],
     template: `
@@ -39,11 +41,10 @@ Vue.component('catalogue', {
         }
     },
     mounted() {
-        fetch(`/products`)
+        fetch(`${$API_URL}/products`)
             .then((response) => response.json())
             .then((items) => {
                 this.products = items;
-                // this.filteredProducts = items;
             });
     },
     template: `
@@ -66,7 +67,7 @@ Vue.component('cart-item', {
         }
     },
     template: `
-    <section v-if="item.quantity" class="product">
+    <section  class="product"> <!-- v-if="item.quantity" -->
         <div class="productPic">
             <img :src="item.pic">
             <div>
@@ -106,48 +107,95 @@ Vue.component('cart-item', {
 });
 
 Vue.component('cart', {
+    props: ['cart'],
     methods:  {
         removeFromCartButtonClick(item) {
             this.$emit('onremovefromcartbuttonclick', item);
         }
     },
-    data() {
-        return {
-            cart: [],
-        } 
+    computed: {
+        summaryCartCost() {
+            return this.cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        }
     },
-    mounted() {
-        fetch(`/cart`)
-            .then((response) => response.json)
-            .then((items) => {
-                this.cart = items;
-            });
-    },
-    template: `                            
+    template: `  
     <div id='cart' class="cart containerM">
         <h4 v-if="summaryCartCost !== 0">PRODUCT DETAILS</h4>
 
         <div class="clearfix"></div>
         <div class="products" id='cart_products'>
 
-            <cart-item v-for="item in cart"></cart-item>
-
+            <section v-for="item in cart" v-if="item.quantity" class="product">
+                <div class="productPic">
+                    <img :src="item.pic">
+                    <div>
+                        <h6>{{item.name}}</h6>
+                        <p><b>Color:</b> {{item.color}}<br><b>Size:</b> XLL</p>
+                    </div>
+                </div>
+                <div class="details">
+                    <p>
+                        <span>
+                            UNITY PRICE
+                        </span>
+                        \${{item.price}}</p>
+                    <p>
+                        <span>
+                            QUANTITY
+                        </span>
+                        {{item.quantity}}
+                    </p>
+                    <p>
+                        <span>
+                            SHIPPING
+                        </span>
+                        FREE
+                    </p>
+                    <p>
+                        <span>
+                            SUBTOTAL
+                        </span>
+                        \${{item.quantity * item.price}}
+                    </p>
+                    <p><button class="fas fa-times-circle removeFromCartButton"
+                            v-bind:id="item.id" @click="removeFromCartButtonClick(item)"></button></p>
+                </div>
+            </section>
             <h3 v-if="summaryCartCost !== 0"> Общая стоимость товаров в корзине: \${{summaryCartCost}}</h3>
             <h3 v-else>Корзина пуста</h3>
         </div>
     </div>
-    `
+    `,
+});
+
+Vue.component('search', {
+    data() {
+        return {
+            searchQuery: '',
+        }
+    },
+    methods: {
+        search() {
+            this.$emit('search', this.searchQuery)
+        }
+    },
+    template: `
+    <form class="searchWrap">
+        <div class="searchBrowse"><a href="#">Browse <i class="fas fa-caret-down"></i></a></div>
+        <input placeholder="Search for Item..." v-model="searchQuery" type="text" id='search-text'>
+        <button @click="search"><i class="fas fa-search" id='search-button'></i></button>
+    </form>
+    `,
 });
 
 const app = new Vue({
     el: '#app',
     data: {
         cart: [],
-        searchQuery: '',
         filterValue: '',
     },
     mounted() {
-        fetch(`/cart`)
+        fetch(`${$API_URL}/cart`)
             .then((response) => response.json())
             .then((items) => {
                 this.cart = items;
@@ -162,7 +210,7 @@ const app = new Vue({
         addToCartButtonClick(item) {
             const cartItem = this.cart.find((cartProduct) => cartProduct.id === item.id); // вернуть cartProduct (что-то из массива cart), если id совпадает с id выбранного продукта|| find возвращает cartProduct, если один из id объектов в массиве this.cart совпадает с id выбранного item (объекта из каталога)
             if (cartItem) {
-                fetch(`/cart/${item.id}`, {
+                fetch(`${$API_URL}/cart/${item.id}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -179,7 +227,7 @@ const app = new Vue({
         removeFromCartButtonClick(item) { // параметр item
             const cartItem = this.cart.find((cartProduct) => cartProduct.id === item.id); // при помощи id находим в корзине нужный товар|| 
             if (cartItem && cartItem.quantity !== 0) {
-                fetch(`/cart/${item.id}`, {
+                fetch(`${$API_URL}/cart/${item.id}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -193,8 +241,8 @@ const app = new Vue({
                     });
             }
         },
-        search() {
-            this.filterValue = this.searchQuery;
+        search(query) {
+            this.filterValue = query;
             // let regexp = new RegExp(this.searchQuery, 'i');
             // this.filteredProducts = this.products.filter((item) => regexp.test(item.name));
         },
@@ -208,7 +256,7 @@ const app = new Vue({
 /////////
 
                 //  else {
-                //     fetch(`/cart`, {
+                //     fetch(`${$API_URL}/cart`, {
                 //         method: 'POST',
                 //         headers: {
                 //             'Content-Type': 'application/json',
