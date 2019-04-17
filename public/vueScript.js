@@ -1,3 +1,5 @@
+const $API_URL = `http://localhost:3000`;
+
 Vue.component('product', {
     props: ['item'],
     template: `
@@ -39,7 +41,7 @@ Vue.component('catalogue', {
         }
     },
     mounted() {
-        fetch(`/products`)
+        fetch(`${$API_URL}/products`)
             .then((response) => response.json())
             .then((items) => {
                 this.products = items;
@@ -193,7 +195,7 @@ const app = new Vue({
         filterValue: '',
     },
     mounted() {
-        fetch(`/cart`)
+        fetch(`${$API_URL}/cart`)
             .then((response) => response.json())
             .then((items) => {
                 this.cart = items;
@@ -208,7 +210,7 @@ const app = new Vue({
         addToCartButtonClick(item) {
             const cartItem = this.cart.find((cartProduct) => cartProduct.id === item.id); // вернуть cartProduct (что-то из массива cart), если id совпадает с id выбранного продукта|| find возвращает cartProduct, если один из id объектов в массиве this.cart совпадает с id выбранного item (объекта из каталога)
             if (cartItem) {
-                fetch(`/cart/${item.id}`, {
+                fetch(`${$API_URL}/cart/${item.id}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -225,7 +227,7 @@ const app = new Vue({
         removeFromCartButtonClick(item) { // параметр item
             const cartItem = this.cart.find((cartProduct) => cartProduct.id === item.id); // при помощи id находим в корзине нужный товар|| 
             if (cartItem && cartItem.quantity !== 0) {
-                fetch(`/cart/${item.id}`, {
+                fetch(`${$API_URL}/cart/${item.id}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -254,7 +256,7 @@ const app = new Vue({
 /////////
 
                 //  else {
-                //     fetch(`/cart`, {
+                //     fetch(`${$API_URL}/cart`, {
                 //         method: 'POST',
                 //         headers: {
                 //             'Content-Type': 'application/json',
